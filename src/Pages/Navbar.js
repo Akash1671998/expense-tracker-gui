@@ -1,33 +1,58 @@
 // src/components/Navbar.js
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { AppBar, Toolbar, Tabs, Tab, IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useNavigate } from 'react-router-dom';
-
-function Navbar() {
+function Navbar({setIsAuthenticated}) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
+    setIsAuthenticated(false)
     localStorage.removeItem('token');
     localStorage.removeItem('loggedInUser');
     navigate('/login');
   };
 
+  // Map paths to tab index
+  const pathToTab = {
+    '/add-expense': 0,
+    '/expension-details': 1,
+    '/expense-table': 2,
+  };
+
+  const tabToPath = [
+    '/add-expense',
+    '/expension-details',
+    '/expense-table'
+  ];
+
+  const currentTab = pathToTab[location.pathname] ?? false;
+
+  const handleTabChange = (event, newValue) => {
+    navigate(tabToPath[newValue]);
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6" component="div">
-            Expense Tracker
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>Logout</Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <AppBar>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Tabs
+          value={currentTab}
+          onChange={handleTabChange}
+          textColor="inherit"
+          indicatorColor="secondary"
+        >
+          <Tab label="Add Expense" />
+          <Tab label="Expension Details" />
+          <Tab label="Expense Table" />
+        </Tabs>
+
+        <IconButton color="inherit" onClick={handleLogout}>
+          <LogoutIcon />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
 }
 

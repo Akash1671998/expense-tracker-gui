@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { APIUrl, handleError, handleSuccess } from '../utils';
-import { ToastContainer } from 'react-toastify';
-import ExpenseTable from './ExpenseTable';
-import ExpenseDetails from './ExpenseDetails';
-import ExpenseForm from './ExpenseForm';
 import Navbar from './Navbar';
 
 function Home() {
@@ -117,23 +113,8 @@ function Home() {
 
     return (
         <div>
-            <div className='user-section'>
-                <h1>Welcome {loggedInUser}</h1>
-                <button onClick={handleLogout}>Logout</button>
-            </div>
-            <ExpenseDetails
-                incomeAmt={incomeAmt}
-                expenseAmt={expenseAmt}
-            />
-
-            <ExpenseForm
-                addTransaction={addTransaction} />
-
-            <ExpenseTable
-                expenses={expenses}
-                deleteExpens={deleteExpens}
-            />
-            <ToastContainer />
+                <Navbar/>
+    
         </div>
     )
 }

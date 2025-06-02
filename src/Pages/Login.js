@@ -11,8 +11,9 @@ import {
 } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import { APIUrl, handleError, handleSuccess } from "../utils";
+import { application } from "../authentication/auth";
 
-function Login() {
+function Login({setIsAuthenticated}) {
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: "",
@@ -43,14 +44,18 @@ function Login() {
       });
 
       const result = await response.json();
-      const { success, message, jwtToken, name, error } = result;
+      const { success, message, error } = result;
+      const jwtToken = result.data?.token;
+      const name = result.data?.name;
+
 
       if (success) {
+        setIsAuthenticated(true)
         handleSuccess(message);
         localStorage.setItem("token", jwtToken);
         localStorage.setItem("loggedInUser", name);
         setTimeout(() => {
-          navigate("/home");
+          navigate("/add-expense");
         }, 1000);
       } else if (error) {
         const details = error?.details[0]?.message;
@@ -62,6 +67,9 @@ function Login() {
       handleError(err.message || "Login failed");
     }
   };
+
+
+
 
   return (
     <Container maxWidth="xs">
