@@ -9,10 +9,9 @@ function Navbar({setIsAuthenticated}) {
   const location = useLocation();
 
   const handleLogout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('token');
-    localStorage.removeItem('loggedInUser');
-    navigate('/login');
+    sessionStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   // Map paths to tab index

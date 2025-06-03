@@ -5,7 +5,7 @@ const application = axios.create({
 });
 
 const requestHandler = (request) => {
-  request.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  request.headers.Authorization = `Bearer ${sessionStorage.getItem("token")}`;
   return request;
 };
 
