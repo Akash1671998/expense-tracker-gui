@@ -9,6 +9,7 @@ import ExpenseDetails from "./Pages/ExpenseDetails";
 import ExpenseTable from "./Pages/ExpenseTable";
 import Navbar from "./Pages/Navbar";
 import NotFound from "./Pages/NotFound";
+import ChangePassword from "./Pages/ChangePassword";
 
 function App() {
   const storedToken = sessionStorage.getItem("token");
@@ -82,6 +83,18 @@ function App() {
           element={
             <PrivateRoute>
               <ExpenseTable
+                updateList={updateList}
+                setUpdateList={setUpdateList}
+              />
+            </PrivateRoute>
+          }
+        />
+
+          <Route
+          path="/ChangePassword"
+          element={
+            <PrivateRoute>
+              <ChangePassword
                 updateList={updateList}
                 setUpdateList={setUpdateList}
               />
