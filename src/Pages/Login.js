@@ -91,7 +91,7 @@ function Login({ setIsAuthenticated }) {
         </Typography>
         <Typography
           variant="body2"
-          sx={{ mt: 1, color: "#888", textAlign: "center", maxWidth: 300}}
+          sx={{ mt: 1, color: "#888", textAlign: "center", maxWidth: 300 }}
         >
           Track every penny. Plan your budget. Make smarter financial decisions.
         </Typography>
@@ -133,7 +133,7 @@ function Login({ setIsAuthenticated }) {
           <Typography
             variant="body2"
             align="center"
-            sx={{ color: "#666", mb: 2,fontWeight: "bold" }}
+            sx={{ color: "#666", mb: 2, fontWeight: "bold" }}
           >
             Please login to your account
           </Typography>
@@ -170,7 +170,7 @@ function Login({ setIsAuthenticated }) {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Typography variant="body2" >
+              <Typography variant="body2">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"

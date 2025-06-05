@@ -1,10 +1,24 @@
 // src/components/Navbar.js
-import React from 'react';
-import { AppBar, Toolbar, Tabs, Tab, IconButton } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import {
+  AppBar,
+  Toolbar,
+  Tabs,
+  Tab,
+  IconButton,
+  Typography,
+  Box,
+} from "@mui/material";
 
-function Navbar({setIsAuthenticated}) {
+import LogoutIcon from "@mui/icons-material/Logout";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+import { useNavigate, useLocation } from "react-router-dom";
+
+function Navbar({ setIsAuthenticated }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,20 +28,13 @@ function Navbar({setIsAuthenticated}) {
     navigate("/login");
   };
 
-  // Map paths to tab index
   const pathToTab = {
-    '/add-expense': 0,
-    '/expension-details': 1,
-    '/expense-table': 2,
-    '/ChangePassword': 3,
+    "/expense-table": 0,
+    "/add-expense": 1,
+    "/ChangePassword": 2,
   };
 
-  const tabToPath = [
-    '/add-expense',
-    '/expension-details',
-    '/expense-table',
-    '/ChangePassword',
-  ];
+  const tabToPath = ["/expense-table", "/add-expense", "/ChangePassword"];
 
   const currentTab = pathToTab[location.pathname] ?? false;
 
@@ -36,23 +43,41 @@ function Navbar({setIsAuthenticated}) {
   };
 
   return (
-    <AppBar>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+    <AppBar position="static">
+      <Toolbar sx={{ justifyContent: "space-between" }}>
         <Tabs
           value={currentTab}
           onChange={handleTabChange}
           textColor="inherit"
           indicatorColor="secondary"
         >
-          <Tab label="Add Expense" />
-          <Tab label="Expension Details" />
-          <Tab label="Expense Table" />
-          <Tab label="Change-Password" />
+          <Tab
+            icon={<TableChartIcon />}
+            label={<Typography sx={{ fontWeight: "bold" }}>Expense</Typography>}
+          />
+          <Tab
+            icon={<AddCircleIcon />}
+            label={
+              <Typography sx={{ fontWeight: "bold" }}>Add Expense</Typography>
+            }
+          />
+          <Tab
+            icon={<LockResetIcon />}
+            label={
+              <Typography sx={{ fontWeight: "bold" }}>
+                Change Password
+              </Typography>
+            }
+          />
         </Tabs>
-
-        <IconButton color="inherit" onClick={handleLogout}>
-          <LogoutIcon />
-        </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton color="inherit" onClick={handleLogout}>
+            <AccountCircleIcon />
+          </IconButton>
+          <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon />
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );
