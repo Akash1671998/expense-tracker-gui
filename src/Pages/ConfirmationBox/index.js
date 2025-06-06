@@ -34,10 +34,10 @@ export default function DeleteConfirmation({
         Are you sure you want to delete the selected {entityName}
       </DialogTitle>
       <DialogActions>
-        <Button onClick={onCancel} color="secondary">
+        <Button onClick={onCancel}  variant="contained" color="error">
           Disagree
         </Button>
-        <Button onClick={onAgree} color="error" autoFocus>
+        <Button onClick={onAgree}  variant="contained" color="success" autoFocus>
           Agree
         </Button>
       </DialogActions>

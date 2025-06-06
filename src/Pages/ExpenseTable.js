@@ -8,17 +8,26 @@ import {
   Grid,
   TextField,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import TuneIcon from "@mui/icons-material/Tune";
 import { application } from "../authentication/auth";
 import CTLNotification from "./Notification";
 import DeleteConfirmation from "./ConfirmationBox";
+import ClearIcon from "@mui/icons-material/Clear";
+import DownloadIcon from '@mui/icons-material/Download';
 
 const ExpenseTable = ({ updateList, setUpdateList }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedRows, setSelectedRows] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  const [openFilterModal, setOpenFilterModal] = useState(false);
   const [filters, setFilters] = useState({
     fromDate: "",
     toDate: "",
@@ -88,59 +97,98 @@ const ExpenseTable = ({ updateList, setUpdateList }) => {
     fetchExpenses();
   }, [updateList]);
 
+  function handleClearSearch() {
+    setFilters((prev) => ({ ...prev, text: "" }));
+  }
+  function ClearFilter() {
+    setFilters((prev) => ({ ...prev, fromDate: "", toDate: "" }));
+  }
+
+
+  const downloadCSV = () => {
+    let url = "/expense/csv/export?";
+    if (filters.fromDate) url += `fromDate=${filters.fromDate}&`;
+    if (filters.toDate) url += `toDate=${filters.toDate}&`;
+    if (filters.text) url += `text=${filters.text}`;
+  
+    application
+      .get(url, { responseType: "blob" })
+      .then((response) => {
+        const blob = new Blob([response.data], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "expenses.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        setNotify({
+          isOpen: true,
+          type: "error",
+          pagename: "Expense Export",
+          message: "CSV Export Failed",
+        });
+      });
+  };
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Your Expenses
-      </Typography>
-
-      {/* Filter Section */}
       <Box
         sx={{
           display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 4,
           flexWrap: "wrap",
           gap: 2,
-          alignItems: "center",
-          mb: 4,
         }}
       >
-        <TextField
-          label="From Date"
-          type="date"
-          name="fromDate"
-          value={filters.fromDate}
-          onChange={handleInputChange}
-          InputLabelProps={{ shrink: true }}
-          sx={{ width: 200 }}
-        />
-        <TextField
-          label="To Date"
-          type="date"
-          name="toDate"
-          value={filters.toDate}
-          onChange={handleInputChange}
-          InputLabelProps={{ shrink: true }}
-          sx={{ width: 200 }}
-        />
-        <TextField
-          label="Search"
-          name="text"
-          value={filters.text}
-          onChange={handleInputChange}
-          placeholder="Search by description"
-          sx={{ flex: 1, minWidth: 200 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<SearchIcon />}
-          onClick={fetchExpenses}
-        >
-          Search
-        </Button>
-      </Box>
+        <Typography variant="h5" fontWeight="bold">
+          Your Expenses
+        </Typography>
 
-      {/* Expense Cards */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <TextField
+            label="Search"
+            name="text"
+            value={filters.text}
+            onChange={handleInputChange}
+            placeholder="Search by description"
+            sx={{ width: 300 }}
+            InputProps={{
+              endAdornment: filters.text && (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClearSearch} edge="end">
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <IconButton
+            size="large"
+            color="success"
+            onClick={() => setOpenFilterModal(true)}
+            sx={{ p: 1.5 }}
+          >
+            <TuneIcon sx={{ fontSize: 32 }} />
+          </IconButton>
+          <IconButton
+            size="large"
+            color="success"
+            onClick={fetchExpenses}
+            sx={{ p: 1.5 }}
+          >
+            <SearchIcon sx={{ fontSize: 32 }} />
+          </IconButton>
+        </Box>
+      </Box>
       <Grid container spacing={2}>
         {expenses.map((expense) => {
           const date = new Date(expense.createAt || expense.createdAt);
@@ -157,14 +205,14 @@ const ExpenseTable = ({ updateList, setUpdateList }) => {
               <Card
                 elevation={4}
                 sx={{
-                  borderLeft: `6px solid ${
+                  borderLeft: `4px solid ${
                     expense.amount > 0 ? "#2ecc71" : "#e74c3c"
                   }`,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  height: "150px",
-                  padding: 2,
+                  height: "120px",
+                  padding: 1,
                   position: "relative",
                   transition: "0.3s",
                   "&:hover": {
@@ -173,43 +221,45 @@ const ExpenseTable = ({ updateList, setUpdateList }) => {
                   },
                 }}
               >
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    {expense.text}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {formattedDate}
-                  </Typography>
-                </Box>
-
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "flex-end",
-                    gap: 1,
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="bold" fontSize={30}>
+                    {expense.text}
+                  </Typography>
+                  <Typography variant="subtitle1" fontWeight="bold" color="info">
+                    {formattedDate}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                     position: "absolute",
                     bottom: 8,
+                    left: 8,
                     right: 8,
                   }}
                 >
+                  <Typography variant="subtitle1" fontWeight="bold" color="success">
+                    RS:{expense.amount}
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <IconButton
                     color="primary"
                     aria-label="view all"
                     size="small"
-                    onClick={() => alert("View All clicked!")}
+                    onClick={() => downloadCSV()}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      width="20"
-                      fill="#1976d2"
-                    >
-                      <path d="M0 0h24v24H0z" fill="none" />
-                      <path d="M12 6a9.77 9.77 0 0 0-9 5.5A9.77 9.77 0 0 0 12 17a9.77 9.77 0 0 0 9-5.5A9.77 9.77 0 0 0 12 6zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
-                      <circle cx="12" cy="12" r="2" />
-                    </svg>
+                  
+                  <DownloadIcon fontSize="small" />
                   </IconButton>
+
 
                   <IconButton
                     onClick={() => deleteRow(expense._id)}
@@ -219,12 +269,63 @@ const ExpenseTable = ({ updateList, setUpdateList }) => {
                   >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
+                  </Box>
                 </Box>
               </Card>
             </Grid>
           );
         })}
       </Grid>
+      <Dialog open={openFilterModal} onClose={() => setOpenFilterModal(false)}>
+        <DialogTitle>Filter by Date</DialogTitle>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 2,
+            minWidth: 400,
+            minHeight: 100,
+          }}
+        >
+          <TextField
+            fullWidth
+            label="From Date"
+            type="date"
+            name="fromDate"
+            value={filters.fromDate}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            fullWidth
+            label="To Date"
+            type="date"
+            name="toDate"
+            value={filters.toDate}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={ClearFilter} variant="contained" color="info">
+            Clear
+          </Button>
+          <Button onClick={() => setOpenFilterModal(false)} variant="contained" color="error">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setOpenFilterModal(false);
+              fetchExpenses();
+            }}
+            color="success"
+            variant="contained"
+          >
+            Apply
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <DeleteConfirmation
         entityName="Expense Data"
