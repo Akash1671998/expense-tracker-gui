@@ -15,29 +15,12 @@ const responseHandler = (response) => {
 
 const errorHandler = (error) => {
   if (error.response?.status === 403) {
+    sessionStorage.removeItem("token");
+     window.dispatchEvent(new Event("logout"));
     window.location = "/login";
   }
   return Promise.reject(error);
 };
-
-// const refreshTokenRequest = () => {
-//   return axios
-//     .post(`${variables.api.services}user/refreshToken`, null, {
-//       headers: {
-//         Authorization: `Refresh-Bearer ${AuthenticationService.getRefreshToken()}`,
-//       },
-//     })
-//     .then((response) => {
-//       AuthenticationService.setRefreshedToken(
-//         response.data.data.token,
-//         response.data.data.refreshToken
-//       );
-//       return Promise.resolve();
-//     })
-//     .catch((error) => {
-//       window.location = "/site/log-out";
-//     });
-// };
 
 application.interceptors.request.use(
   (request) => requestHandler(request),

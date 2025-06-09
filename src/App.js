@@ -19,6 +19,15 @@ function App() {
 
   const [updateList, setUpdateList] = useState(Date.now());
   const location = useLocation();
+  useEffect(() => {
+    const handleLogout = () => {
+      setIsAuthenticated(false);
+    };
+    window.addEventListener("logout", handleLogout);
+    return () => {
+      window.removeEventListener("logout", handleLogout);
+    };
+  }, []);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
