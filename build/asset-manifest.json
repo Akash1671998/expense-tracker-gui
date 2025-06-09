@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/Akash1671998/expense-tracker-gui/static/css/main.cfa21454.css",
-    "main.js": "/Akash1671998/expense-tracker-gui/static/js/main.84339567.js",
-    "static/media/Expense.svg": "/Akash1671998/expense-tracker-gui/static/media/Expense.cf0ef3e5b2d9aec2f9166137952f9359.svg",
-    "index.html": "/Akash1671998/expense-tracker-gui/index.html",
-    "main.cfa21454.css.map": "/Akash1671998/expense-tracker-gui/static/css/main.cfa21454.css.map",
-    "main.84339567.js.map": "/Akash1671998/expense-tracker-gui/static/js/main.84339567.js.map"
+    "main.css": "/expense-tracker-gui/static/css/main.cfa21454.css",
+    "main.js": "/expense-tracker-gui/static/js/main.39ef5c8a.js",
+    "static/media/Expense.svg": "/expense-tracker-gui/static/media/Expense.cf0ef3e5b2d9aec2f9166137952f9359.svg",
+    "index.html": "/expense-tracker-gui/index.html",
+    "main.cfa21454.css.map": "/expense-tracker-gui/static/css/main.cfa21454.css.map",
+    "main.39ef5c8a.js.map": "/expense-tracker-gui/static/js/main.39ef5c8a.js.map"
   },
   "entrypoints": [
     "static/css/main.cfa21454.css",
-    "static/js/main.84339567.js"
+    "static/js/main.39ef5c8a.js"
   ]
 }
