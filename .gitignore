@@ -3,13 +3,13 @@
 # dependencies
 /node_modules
 .DS_Store
-.vscode/
+.vscode/``
 
 # testing
 /coverage
 
 # production
-/build
+/build``
 
 # misc
 .DS_Store
